@@ -48,7 +48,7 @@ Este código fornece uma implementação de um Perceptron Multicamadas simples, 
 
 
 
-- `predict(self, X)`: Após a rede ter sido treinada, esta função pode ser usada para fazer previsões sobre novos dados.
+- `operacao(self, X)`: Após a rede ter sido treinada, esta função pode ser usada para fazer previsões sobre novos dados.
 
 
 
