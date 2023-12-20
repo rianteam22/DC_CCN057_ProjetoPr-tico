@@ -1,0 +1,10 @@
+4 - Redes neurais geralmente começam com pesos inicializados aleatoriamente. 
+Essa inicialização aleatória pode levar tanto a diferentes mínimos locais no espaço de erro da função objetivo 
+como a diferentes números de épocas. 
+Portanto, mesmo com a mesma arquitetura e conjunto de dados,cada treinamento pode convergir para um mínimo ligeiramente diferente.
+
+6 - A configuração de treinamento T3 tem o menor erro relativo médio e a menor variância, 
+o que sugere que ela está oferecendo a melhor generalização entre as configurações testadas. 
+Isso significa que T3 é provavelmente a melhor escolha para o sistema de ressonância magnética, 
+pois apresenta previsões mais próximas dos valores reais em média e com menor dispersão dos erros, 
+indicando um modelo mais robusto e confiável comparado aos demais.
