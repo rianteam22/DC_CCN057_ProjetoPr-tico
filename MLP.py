@@ -9,10 +9,9 @@ class MultilayerPerceptron:
         self.N = taxa_aprendizado
         self.Epsilon = epsilon
         self.epocas = 0
-        # Impressões removidas para brevidade
 
     def logistica(self, x, B=1):
-        # Função de ativação logística (sigmoidal)
+        # Função de ativação logística
         return 1 / (1 + np.exp(-B * x))
 
     def logistica_derivada(self, x):
@@ -52,28 +51,27 @@ class MultilayerPerceptron:
         return eqm_total / len(X)
 
     def treinamento(self, X, D):
+        historico_eqm = []  # Lista para armazenar o histórico do EQM
         cont = 0
         while True:
             eqm_anterior = self.calcular_eqm(X, D)
-#            print(f"EQM anterior: {eqm_anterior}")
+            historico_eqm.append(eqm_anterior)  # Armazena o EQM da época atual
+        
             for x, d in zip(X, D):
-                self.forward(x)
-                self.backward(x, d)
-            
+             self.forward(x)
+             self.backward(x, d)
+        
             eqm_atual = self.calcular_eqm(X, D)
-#            print(f"EQM atual: {eqm_atual}")
-#            print(f"Época: {self.epocas}")
             self.epocas += 1
-            
+        
             if abs(eqm_atual - eqm_anterior) <= self.Epsilon:
                 cont += 1
                 if cont >= 2:
-                    print("Erro quadrático médio suficientemente pequeno alcançado por 2 épocas consecutivas"
-                    + f" com valor absoluto de {abs(eqm_atual - eqm_anterior)}")
                     print(f"Convergência alcançada após {self.epocas} épocas com EQM de {eqm_atual}.")
                     break
+        return historico_eqm  # Retorna o histórico do EQM após o treinamento
 
-    def predict(self, X):
+    def operacao(self, X):
         # Realiza predições com base nos dados de entrada
         predicoes = []
         for x in X:
@@ -90,7 +88,6 @@ pdDataFrame = pd.read_excel(arquivo_xls_treino)
 pdDataFrameTeste = pd.read_excel(arquivo_xls_teste)
 print(pdDataFrame)
 
-# Verifica se o DataFrame tem 4 colunas (3 para input, 1 para output)
 # Separação dos dados em inputs (x) e outputs (d)
 x = pdDataFrame.iloc[:, :3].values  # Seleciona as três primeiras colunas para input
 d = pdDataFrame.iloc[:, 3].values  # Seleciona a quarta coluna para output
@@ -101,7 +98,17 @@ input_size = 3  # Número de entradas
 hidden_size = 10 # Número de neurônios na camada oculta
 output_size = 1 # Número de saídas
 
+historicos_eqm = []
+
 for i in range(5):
     mlp = MultilayerPerceptron(input_size, hidden_size, output_size)
-    mlp.treinamento(x, d)
-    mlp.predict(x_teste)
+    historico_eqm = mlp.treinamento(x, d)  # Treinamento e armazenamento do histórico de EQM
+    historicos_eqm.append(historico_eqm)  # Adiciona o histórico de EQM à lista
+    mlp.operacao(x_teste)
+
+# Criação de um DataFrame para armazenar todos os históricos de EQM
+df_historicos_eqm = pd.DataFrame(historicos_eqm).T  # Transposta para ter as épocas nas linhas
+df_historicos_eqm.columns = [f'Treinamento {i+1} EQM' for i in range(5)]  # Nomeando as colunas
+
+# Salvar o DataFrame em um arquivo CSV
+df_historicos_eqm.to_csv('historico_eqm.csv', index_label='Epoca')
